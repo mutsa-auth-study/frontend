@@ -1,10 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
+import Header from '../components/Header'
 
 function Main() {
   return (
     <MainContainer>
-      <div>hello</div>
+      <Header />
     </MainContainer>
   )
 }
@@ -12,6 +13,6 @@ function Main() {
 export default Main
 
 const MainContainer = styled.div`
-  width: 1200px;
+  width: 100vw;
   height: 100vh;
 `
