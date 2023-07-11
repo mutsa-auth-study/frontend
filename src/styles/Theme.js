@@ -2,8 +2,10 @@ const fontSizes = {
   navigation: '20px',
   introduction_title: '40px',
   introduction_desc: '24px',
+  welcome_title: '32px',
   profile: '18px',
   label: '20px',
+  input: '16px',
 
   // 게시글 목록
   writer: '16px',
