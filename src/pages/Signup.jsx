@@ -6,18 +6,67 @@ import SignupInput from '../components/input/SignupInput'
 import { useForm } from 'react-hook-form'
 import Regex from '../constants/Regex'
 import { useNavigate } from 'react-router-dom'
+import { request } from '../util/axios'
+import useAlert from '../hooks/useAlert'
+import { useEffect, useState } from 'react'
 
 function Signup() {
+  const alert = useAlert()
+  const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
+    getValues,
+    watch,
     formState: { errors },
   } = useForm()
 
-  const onSubmit = data => {
-    console.log(data)
+  const [idChecked, setIdChecked] = useState(false)
+  const inputId = watch('id')
+
+  const checkDuplicate = async () => {
+    if (inputId.trim() === '') return
+    try {
+      const response = await request(
+        'post',
+        `/signup/checkduplicate`,
+        { id: inputId },
+        null
+      )
+      if (response.status === 200) {
+        alert(true, response.data)
+        setIdChecked(true)
+      }
+    } catch (error) {
+      alert(false, error.response.data)
+    }
   }
-  const navigate = useNavigate()
+
+  useEffect(() => {
+    setIdChecked(false)
+  }, [inputId])
+
+  const onSubmit = async data => {
+    // 중복체크를 하지 않은 경우
+    if (!idChecked) {
+      alert(false, '아이디 중복체크를 해주세요')
+      return
+    }
+
+    const { id, password, koreanName } = data
+    try {
+      const response = await request(
+        'post',
+        '/signup',
+        { id, password, name: koreanName },
+        null
+      )
+      console.log(response)
+    } catch (error) {
+      alert(false, error.response.data)
+    }
+  }
 
   const goMain = () => {
     navigate('/')
@@ -34,7 +83,8 @@ function Signup() {
             name="id"
             specificPlaceholder="ID를 입력해주세요"
             required={true}
-            checkDuplicate={true}
+            checkDuplicate={checkDuplicate}
+            checkPassword={false}
             type="text"
             register={register}
             errors={errors.id}
@@ -48,33 +98,45 @@ function Signup() {
             specificPlaceholder="비밀번호를 입력해주세요"
             required={true}
             checkDuplicate={false}
+            checkPassword={false}
             type="password"
             register={register}
             errors={errors.password}
             minLength={8}
-            maxLength={16}
+            validPattern={Regex.password.validPattern}
+          />
+          <SignupInput
+            labelName="비밀번호 확인"
+            name="checkpassword"
+            specificPlaceholder="같은 비밀번호를 입력해주세요"
+            required={true}
+            checkDuplicate={false}
+            checkPassword={() => getValues('password')}
+            type="password"
+            register={register}
+            errors={errors.checkpassword}
+            minLength={8}
             validPattern={Regex.password.validPattern}
           />
           <SignupInput
             labelName="이름"
-            name="name"
+            name="koreanName"
             specificPlaceholder="이름을 입력해주세요"
             required={true}
             checkDuplicate={false}
-            type="password"
+            checkPassword={false}
+            type="text"
             register={register}
-            errors={errors.name}
+            errors={errors.koreanName}
             minLength={2}
             maxLength={5}
-            validPattern={Regex.name.validPattern}
+            validPattern={Regex.koreanName.validPattern}
           />
           <ButtonContainer>
             <JoinButton type="button" onClick={goMain}>
               취소
             </JoinButton>
-            <LoginButton type="submit" onClick={onSubmit}>
-              회원가입
-            </LoginButton>
+            <LoginButton type="submit">회원가입</LoginButton>
           </ButtonContainer>
         </SignupInputForm>
       </LoginSection>

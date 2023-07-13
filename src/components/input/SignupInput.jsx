@@ -13,6 +13,7 @@ export default function SignupInput(props) {
           placeholder={`${
             props.specificPlaceholder ? props.specificPlaceholder : ''
           }`}
+          minLength={props.minLength}
           maxLength={props.maxLength}
           {...props.register(props.name, {
             required: {
@@ -27,6 +28,14 @@ export default function SignupInput(props) {
               value: props.validPattern,
               message: '조건에 맞게 입력해주세요',
             },
+            validate: {
+              check: val => {
+                if (!props.checkPassword) return
+                if (props.checkPassword() !== val) {
+                  return '비밀번호가 일치하지 않습니다'
+                }
+              },
+            },
           })}
         />
         {props.checkDuplicate ? (
@@ -35,7 +44,11 @@ export default function SignupInput(props) {
           </CheckDuplicate>
         ) : null}
       </InputRowContent>
-      {props.error && <ErrorMessage>{props.error}</ErrorMessage>}
+      {props.errors && (
+        <ErrorMessage>
+          <ErrorIcon />
+        </ErrorMessage>
+      )}
     </InputRow>
   )
 }
@@ -97,11 +110,17 @@ const CheckDuplicate = styled.button`
 
 const ErrorMessage = styled.span`
   position: absolute;
-  top: 10%;
+  top: 20%;
   right: -50px;
   color: ${theme.colors.orange};
   font-weight: 300;
   line-height: 150%;
   font-size: ${theme.fontSizes.label};
   white-space: nowrap;
+`
+
+const ErrorIcon = styled.div`
+  width: 30px;
+  height: 30px;
+  background-image: url('/images/warning.png');
 `

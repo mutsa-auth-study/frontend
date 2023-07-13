@@ -51,6 +51,7 @@ const NavigationItem = styled(Link)`
   color: ${theme.colors.white};
   font-size: ${theme.fontSizes.navigation};
   text-decoration: none;
+  white-space: nowrap;
 `
 
 const UserButton = styled.button`
@@ -76,4 +77,5 @@ const UserIcon = styled.img`
 const UserButtonText = styled.span`
   color: ${theme.colors.white};
   font-size: ${theme.fontSizes.navigation};
+  white-space: nowrap;
 `

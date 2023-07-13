@@ -7,19 +7,40 @@ import { useForm } from 'react-hook-form'
 import { followMessage, welcomeMessage } from './../constants/Message'
 import Regex from '../constants/Regex'
 import { useNavigate } from 'react-router-dom'
+import { request } from '../util/axios'
+import { useSetRecoilState } from 'recoil'
+import { user } from './../store/atom/user'
+import useAlert from '../hooks/useAlert'
 
 function Login() {
+  const setLoginUser = useSetRecoilState(user)
+  const navigate = useNavigate()
+  const alert = useAlert()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm()
 
-  const onSubmit = data => {
-    console.log(data)
+  const onSubmit = async data => {
+    const { id, password } = data
+    try {
+      const response = await request(
+        'post',
+        `/auth/login`,
+        { id, password },
+        null
+      )
+      if (response.status === 200) {
+        const { name, accessToken } = response
+        setLoginUser({ name, accessToken })
+        alert(true, '로그인에 성공했습니다.')
+        navigate('/')
+      }
+    } catch (error) {
+      alert(false, error.response.data)
+    }
   }
-
-  const navigate = useNavigate()
 
   const goSignup = () => {
     navigate('/signup')
@@ -54,16 +75,13 @@ function Login() {
             register={register}
             errors={errors.password}
             minLength={8}
-            maxLength={16}
             validPattern={Regex.password.validPattern}
           />
           <ButtonContainer>
             <JoinButton type="button" onClick={goSignup}>
               회원가입
             </JoinButton>
-            <LoginButton type="submit" onClick={onSubmit}>
-              로그인
-            </LoginButton>
+            <LoginButton type="submit">로그인</LoginButton>
             <InduceJoinMent>회원이 아니라면</InduceJoinMent>
           </ButtonContainer>
         </LoginInputForm>

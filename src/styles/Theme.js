@@ -18,7 +18,7 @@ const fontSizes = {
 
   // 게시글 작성
   write_title: '24px',
-  input: '15px',
+  write_input: '15px',
 }
 
 const colors = {
