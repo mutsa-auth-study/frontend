@@ -11,6 +11,7 @@ function Signup() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm()
 
@@ -35,6 +36,7 @@ function Signup() {
             specificPlaceholder="ID를 입력해주세요"
             required={true}
             checkDuplicate={true}
+            checkPassword={false}
             type="text"
             register={register}
             errors={errors.id}
@@ -48,9 +50,23 @@ function Signup() {
             specificPlaceholder="비밀번호를 입력해주세요"
             required={true}
             checkDuplicate={false}
+            checkPassword={false}
             type="password"
             register={register}
             errors={errors.password}
+            minLength={8}
+            validPattern={Regex.password.validPattern}
+          />
+          <SignupInput
+            labelName="비밀번호 확인"
+            name="checkpassword"
+            specificPlaceholder="같은 비밀번호를 입력해주세요"
+            required={true}
+            checkDuplicate={false}
+            checkPassword={() => getValues('password')}
+            type="password"
+            register={register}
+            errors={errors.checkpassword}
             minLength={8}
             validPattern={Regex.password.validPattern}
           />
@@ -60,6 +76,7 @@ function Signup() {
             specificPlaceholder="이름을 입력해주세요"
             required={true}
             checkDuplicate={false}
+            checkPassword={false}
             type="text"
             register={register}
             errors={errors.koreanName}

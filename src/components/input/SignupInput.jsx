@@ -28,6 +28,14 @@ export default function SignupInput(props) {
               value: props.validPattern,
               message: '조건에 맞게 입력해주세요',
             },
+            validate: {
+              check: val => {
+                if (!props.checkPassword) return
+                if (props.checkPassword() !== val) {
+                  return '비밀번호가 일치하지 않습니다'
+                }
+              },
+            },
           })}
         />
         {props.checkDuplicate ? (
