@@ -13,6 +13,7 @@ export default function SignupInput(props) {
           placeholder={`${
             props.specificPlaceholder ? props.specificPlaceholder : ''
           }`}
+          minLength={props.minLength}
           maxLength={props.maxLength}
           {...props.register(props.name, {
             required: {
@@ -35,7 +36,11 @@ export default function SignupInput(props) {
           </CheckDuplicate>
         ) : null}
       </InputRowContent>
-      {props.error && <ErrorMessage>{props.error}</ErrorMessage>}
+      {props.errors && (
+        <ErrorMessage>
+          <ErrorIcon />
+        </ErrorMessage>
+      )}
     </InputRow>
   )
 }
@@ -97,11 +102,17 @@ const CheckDuplicate = styled.button`
 
 const ErrorMessage = styled.span`
   position: absolute;
-  top: 10%;
+  top: 20%;
   right: -50px;
   color: ${theme.colors.orange};
   font-weight: 300;
   line-height: 150%;
   font-size: ${theme.fontSizes.label};
   white-space: nowrap;
+`
+
+const ErrorIcon = styled.div`
+  width: 30px;
+  height: 30px;
+  background-image: url('/images/warning.png');
 `

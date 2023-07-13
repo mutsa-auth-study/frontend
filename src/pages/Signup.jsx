@@ -52,29 +52,26 @@ function Signup() {
             register={register}
             errors={errors.password}
             minLength={8}
-            maxLength={16}
             validPattern={Regex.password.validPattern}
           />
           <SignupInput
             labelName="이름"
-            name="name"
+            name="koreanName"
             specificPlaceholder="이름을 입력해주세요"
             required={true}
             checkDuplicate={false}
-            type="password"
+            type="text"
             register={register}
-            errors={errors.name}
+            errors={errors.koreanName}
             minLength={2}
             maxLength={5}
-            validPattern={Regex.name.validPattern}
+            validPattern={Regex.koreanName.validPattern}
           />
           <ButtonContainer>
             <JoinButton type="button" onClick={goMain}>
               취소
             </JoinButton>
-            <LoginButton type="submit" onClick={onSubmit}>
-              회원가입
-            </LoginButton>
+            <LoginButton type="submit">회원가입</LoginButton>
           </ButtonContainer>
         </SignupInputForm>
       </LoginSection>

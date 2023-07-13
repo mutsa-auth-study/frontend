@@ -54,7 +54,6 @@ function Login() {
             register={register}
             errors={errors.password}
             minLength={8}
-            maxLength={16}
             validPattern={Regex.password.validPattern}
           />
           <ButtonContainer>
