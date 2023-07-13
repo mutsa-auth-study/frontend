@@ -26,7 +26,7 @@ function Signup() {
   const inputId = watch('id')
 
   const checkDuplicate = async () => {
-    if (inputId.trim() === '') return
+    if (inputId === undefined || inputId.trim() === '') return
     try {
       const response = await request(
         'post',
@@ -62,7 +62,10 @@ function Signup() {
         { id, password, name: koreanName },
         null
       )
-      console.log(response)
+      if (response.status === 201) {
+        navigate('/')
+        window.location.reload()
+      }
     } catch (error) {
       alert(false, error.response.data)
     }

@@ -13,6 +13,8 @@ export const handlers = [
 
     // 회원 정보가 서버에 있는지 체크
     const loginUser = members.find(user => user.id === id)
+    console.log(members)
+    console.log(loginUser)
     if (loginUser === undefined)
       return res(ctx.status(401), ctx.json('회원이 존재하지 않습니다.'))
 
@@ -32,12 +34,18 @@ export const handlers = [
   rest.post(`${BASE_URL}/signup`, async (req, res, ctx) => {
     const body = await req.json()
     const { id, password, name } = body
-    const signupUser = [{ id, password, name }]
+    const signupUser = { id, password, name }
+    const members = JSON.parse(localStorage.getItem('member'))
 
     // 서버 문제 (로컬 스토리지에 member 없음)
-    const members = JSON.parse(localStorage.getItem('member'))
-    if (members === null)
-      return res(ctx.status(500), ctx.json('서버에 문제가 있습니다.'))
+    // 첫 시도일 것이기 때문에 그냥 회원가입 진입 -> 두 번째부터는 이 곳으로 오지 않음
+    if (members === null) {
+      localStorage.setItem('member', JSON.stringify([{ id, password, name }]))
+      return res(
+        ctx.status(201),
+        ctx.json({ status: 201, data: '회원가입이 정상적으로 완료되었습니다.' })
+      )
+    }
 
     // 이미 가입한 회원인지 체크 (혹시나 몰라서 회원가입 시에 한 번 더 체크)
     const checkDuplicateUser = members.find(user => user.id === id)
@@ -47,17 +55,24 @@ export const handlers = [
     // 이상 없을 시 정상적으로 회원가입
     members.push(signupUser)
     localStorage.setItem('member', JSON.stringify(members))
-    return res(ctx.status(201), ctx.json('회원가입 성공!'))
+    return res(
+      ctx.status(201),
+      ctx.json({ status: 201, data: '회원가입이 정상적으로 완료되었습니다.' })
+    )
   }),
 
   rest.post(`${BASE_URL}/signup/checkduplicate`, async (req, res, ctx) => {
     const body = await req.json()
     const { id } = body
 
-    // 서버 문제 (로컬 스토리지에 member 없음)
+    // 서버 문제 (로컬 스토리지에 member 없음) -> 두 번째부터는 이 곳으로 오지 않음
     const members = JSON.parse(localStorage.getItem('member'))
-    if (members === null)
-      return res(ctx.status(500), ctx.json('서버에 문제가 있습니다.'))
+    if (members === null) {
+      return res(
+        ctx.status(200),
+        ctx.json({ status: 200, data: '테스트 상 임시로 통과' })
+      )
+    }
 
     // 이미 가입한 회원인지 체크
     const checkDuplicateUser = members.find(user => user.id === id)
